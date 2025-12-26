@@ -289,21 +289,36 @@ const { className = '' } = Astro.props;
 
         // Meses involucrados (ordenados y únicos)
         const monthAbbr = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
         const monthKeys: string[] = Array.from(new Set(entries.map(e => `${e.date.getFullYear()}-${String(e.date.getMonth()+1).padStart(2,'0')}`)))
           .sort((a,b)=> a.localeCompare(b));
         const monthsLabels = monthKeys.map(k => {
           const [y, m] = k.split('-').map(Number);
           return `${monthAbbr[(m||1)-1]}-${y}`;
         });
+        const monthsLabelsFull = monthKeys.map(k => {
+          const [y, m] = k.split('-').map(Number);
+          return `${monthNames[(m||1)-1]} ${y}`;
+        });
 
         // Título: desplazar 1 columna (B) y 1 fila hacia abajo
         worksheet.addRow([]); // fila en blanco para bajar una fila
         const titleRow = worksheet.addRow(['', '']);
         const titleCell = titleRow.getCell(2);
-        titleCell.value = fullName;
-        titleCell.font = { color: { argb: 'FF002B45' }, size: 15, bold: true };
+        titleCell.value = `Trabajador: ${fullName}`;
+        titleCell.font = { color: { argb: 'FF000000' }, size: 15, bold: true };
         titleCell.alignment = { horizontal: 'left', vertical: 'middle' };
         titleRow.height = 20;
+        
+        // Fila con meses y años
+        const monthsRow = worksheet.addRow(['', '']);
+        const monthsCell = monthsRow.getCell(2);
+        const monthsText = monthsLabelsFull.length > 0 ? monthsLabelsFull.join(' / ') : 'Sin meses';
+        monthsCell.value = `Período: ${monthsText}`;
+        monthsCell.font = { color: { argb: 'FF000000' }, size: 12, bold: true };
+        monthsCell.alignment = { horizontal: 'left', vertical: 'middle' };
+        monthsRow.height = 18;
+        
         worksheet.addRow([]);
 
         // Encabezados
@@ -324,8 +339,13 @@ const { className = '' } = Astro.props;
               size: 12
             };
             cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            // Sin bordes en el encabezado
-            cell.border = undefined as any;
+            // Bordes negros en el encabezado
+            cell.border = {
+              top: { style: 'thin', color: { argb: 'FF000000' } },
+              left: { style: 'thin', color: { argb: 'FF000000' } },
+              bottom: { style: 'thin', color: { argb: 'FF000000' } },
+              right: { style: 'thin', color: { argb: 'FF000000' } }
+            };
           }
         });
 
@@ -368,17 +388,14 @@ const { className = '' } = Astro.props;
               cell.alignment = { horizontal: 'center', vertical: 'middle' };
               }
               cell.border = {
-                top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-                left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-                bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-                right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+                top: { style: 'thin', color: { argb: 'FF000000' } },
+                left: { style: 'thin', color: { argb: 'FF000000' } },
+                bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                right: { style: 'thin', color: { argb: 'FF000000' } }
               };
             }
           });
         });
-
-        // Fila vacía antes de totales
-        worksheet.addRow([]);
 
         // Fila de totales
         const totalsRowData: any[] = ["", "", "Σ Total", Number(currentSummary.total)];
@@ -399,10 +416,10 @@ const { className = '' } = Astro.props;
               };
               cell.font = { bold: true };
               cell.border = {
-                top: { style: 'thick', color: { argb: 'FF0A6AA1' } },
-                left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-                bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
-                right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+                top: { style: 'thick', color: { argb: 'FF000000' } },
+                left: { style: 'thin', color: { argb: 'FF000000' } },
+                bottom: { style: 'thin', color: { argb: 'FF000000' } },
+                right: { style: 'thin', color: { argb: 'FF000000' } }
               };
             } else {
               // Sin estilo para las dos primeras celdas
