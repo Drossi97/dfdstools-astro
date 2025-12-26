@@ -9,12 +9,7 @@ export default defineConfig({
   vite: {
     preview: {
       host: '0.0.0.0',
-      allowedHosts: [
-        'prueba.rossicode.es',
-        '.rossicode.es',
-        'localhost',
-        /.*/  // Permite cualquier dominio
-      ]
+      allowedHosts: true  // Permite cualquier host
     }
   }
 });
