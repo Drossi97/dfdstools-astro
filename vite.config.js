@@ -3,7 +3,8 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   preview: {
     host: true,
-    port: Number(process.env.PORT) || 4321
+    port: Number(process.env.PORT) || 4321,
+    allowedHosts: ['.']
   }
 });
 
